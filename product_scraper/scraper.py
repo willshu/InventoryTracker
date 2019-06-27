@@ -8,10 +8,12 @@ import json
 import asyncio
 import concurrent.futures
 import aiohttp
-from scraper_settings import urls, api
+import os
+from sites import urls
 
+logging_dir = "/usr/share/scraper/logs"
 logging_filename = "scraper" + datetime.datetime.now().strftime('%Y-%m-%d') + '.log'
-logging.basicConfig(filename=logging_filename, filemode='a', level='INFO', format='%(asctime)-15s - %(message)s')
+logging.basicConfig(filename=os.path.join(logging_dir, logging_filename), filemode='a', level='INFO', format='%(asctime)-15s - %(message)s')
 
 class Product():
 	def __init__(self, name, price, url, stock):
@@ -28,9 +30,10 @@ class Product():
 
 
 async def api_call(product, session):
-	headers = api['headers']
-	url_get = api['url_get']
-	url_put_post = api['url_put_post']
+	api_token = "Token " + os.environ['API_TOKEN']
+	headers = {"Content-Type" : "application/json", "Authorization" : api_token}
+	url_get = 'http://nginx/api/products/?name='
+	url_put_post = 'http://nginx/api/products/'
 	async with session.get(url_get + product.name, headers=headers) as resp:
 		resp.raise_for_status()
 		ret = await resp.json()
@@ -86,12 +89,12 @@ def parse_products(products):
 		name = product["data-name"]
 		link = product.find('a', {'data-event-type': 'product-click'})['href']
 		cost = product.find('span', {'class': 'price price--withoutTax price-section--minor'}).string
-		stock = None
 		try:
 			product.find('a', {'class': 'button button--small card-figcaption-button'}).contents
-			stock = True
 		except AttributeError:
 			stock = False
+		else:
+			stock = True
 		inventory.append(Product(name,cost,link,stock))	
 	return inventory
 
