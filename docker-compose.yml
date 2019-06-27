@@ -1,0 +1,24 @@
+version: '3'
+services:
+  django:
+    build: ./product_api
+    container_name: docker_api
+    image: docker_api
+    env_file: ./product_api/config.env
+  nginx:
+    build: ./product_gateway
+    container_name: docker_gateway
+    image: docker_gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./product_api/static:/usr/share/nginx/html/static:ro
+    depends_on:
+      - django
+  scraper:
+    build: ./product_scraper
+    container_name: docker_scraper
+    image: docker_scraper
+    env_file: ./product_scraper/config.env
+    volumes:
+      - ./product_scraper/logs:/usr/share/scraper/logs
