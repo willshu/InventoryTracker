@@ -11,11 +11,11 @@ This is a personal project that currently lacks many features. Some of my more a
 2. Ability to enter a URL and syntactically locate XPATHs in the DOM for customized scraping
 3. Build a browser plug-in to gather raw data about product attributes 
 4. Build a ML model from raw data and scrape without the need for individual, baked-in rulesets 
-5. Leverage user-generated data from (2) and (3) to further train the model 
+5. Leverage user-generated data from (3) and (4) to further train the model 
 
 This project is written in Python and Django, and is intended to be run on a Docker host with the included docker-compose.yml
 
-**Structure**
+**Structure (simplified)**
 ```
 InventoryTracker
 |-- deploy
