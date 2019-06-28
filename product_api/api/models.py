@@ -1,6 +1,7 @@
 from django.db import models
 from django_filters.rest_framework import DjangoFilterBackend
 from twilio.rest import Client
+import os
 
 class Product(models.Model):
     name = models.TextField()
@@ -37,14 +38,14 @@ class Product(models.Model):
     #         return True
 
     def send_sms(self):
-        account_sid = 'AC96f6f4da9705c753c6e1a683804a6484'
-        auth_token = 'e7f8e2645407634ebd29d05edea180d8'
+        account_sid = os.environ['TWILIO_ACCOUNT']
+        auth_token = os.environ['TWILIO_TOKEN']
         client = Client(account_sid, auth_token)
         message = client.messages \
             .create(
-                    body="New item {} product ID {} price {}".format(self.name, self.pk, self.price),
-                    from_='+16467982219',
-                    to='+19177103981'
+                    body = "New item {} product ID {} price {}".format(self.name, self.pk, self.price),
+                    from_ = os.environ['TWILIO_FROM'],
+                    to = os.environ['TWILIO_TO']
                 )
         print(message)
     

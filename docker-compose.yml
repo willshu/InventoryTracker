@@ -22,3 +22,5 @@ services:
     env_file: ./product_scraper/config.env
     volumes:
       - ./product_scraper/logs:/usr/share/scraper/logs
+    depends_on: 
+      - nginx
